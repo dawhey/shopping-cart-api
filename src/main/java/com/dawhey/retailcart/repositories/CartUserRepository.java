@@ -13,4 +13,5 @@ public interface CartUserRepository extends CrudRepository<CartUser, Long> {
 
     CartUser findOneByUserName(String userName);
 
+    CartUser findOneByToken(String token);
 }

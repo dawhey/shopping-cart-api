@@ -1,8 +1,6 @@
 package com.dawhey.retailcart.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ShoppingCart {
@@ -11,8 +9,12 @@ public class ShoppingCart {
     @GeneratedValue
     private long id;
 
-    private boolean isUsed;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private CartUser currentUser;
 
+    @OneToOne(mappedBy = "cart")
+    private PurchaseAction purchaseAction;
 
     public long getId() {
         return id;
@@ -22,11 +24,19 @@ public class ShoppingCart {
         this.id = id;
     }
 
-    public boolean isUsed() {
-        return isUsed;
+    public CartUser getCurrentUser() {
+        return currentUser;
     }
 
-    public void setUsed(boolean used) {
-        isUsed = used;
+    public void setCurrentUser(CartUser currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public PurchaseAction getPurchaseAction() {
+        return purchaseAction;
+    }
+
+    public void setPurchaseAction(PurchaseAction purchaseAction) {
+        this.purchaseAction = purchaseAction;
     }
 }

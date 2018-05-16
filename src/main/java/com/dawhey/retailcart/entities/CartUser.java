@@ -19,6 +19,9 @@ public class CartUser {
 
     private String token;
 
+    @OneToOne(mappedBy = "currentUser")
+    private ShoppingCart cart;
+
     public long getId() {
         return id;
     }
@@ -49,5 +52,13 @@ public class CartUser {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public ShoppingCart getCart() {
+        return cart;
+    }
+
+    public void setCart(ShoppingCart cart) {
+        this.cart = cart;
     }
 }

@@ -1,6 +1,6 @@
-package com.dawhey.retailcart.entities;
+package com.dawhey.retailcart.request;
 
-public class UserEntity {
+public class AuthenticationRequest {
 
     private String userName;
 

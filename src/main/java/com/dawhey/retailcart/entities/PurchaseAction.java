@@ -12,7 +12,9 @@ public class PurchaseAction {
     @GeneratedValue
     private long id;
 
-    private long userId;
+    @OneToOne
+    @JoinColumn(name = "cart_id")
+    private ShoppingCart cart;
 
     private boolean isCompleted;
 
@@ -25,14 +27,6 @@ public class PurchaseAction {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public boolean isCompleted() {
@@ -49,5 +43,14 @@ public class PurchaseAction {
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+
+    public ShoppingCart getCart() {
+        return cart;
+    }
+
+    public void setCart(ShoppingCart cart) {
+        this.cart = cart;
     }
 }

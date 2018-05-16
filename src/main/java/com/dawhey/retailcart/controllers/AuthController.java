@@ -1,7 +1,7 @@
 package com.dawhey.retailcart.controllers;
 
 import com.dawhey.retailcart.entities.CartUser;
-import com.dawhey.retailcart.entities.UserEntity;
+import com.dawhey.retailcart.request.AuthenticationRequest;
 import com.dawhey.retailcart.repositories.CartUserRepository;
 import com.dawhey.retailcart.response.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     @ResponseBody
-    public AuthenticationResponse authenticate(@RequestBody UserEntity user) {
+    public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest user) {
         CartUser cartUser = cartUserRepository.findOneByUserName(user.getUserName());
         if (cartUser != null && cartUser.getPassword().equals(user.getPassword())) {
             String token = UUID.randomUUID().toString();
