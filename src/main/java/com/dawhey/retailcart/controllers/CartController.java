@@ -7,7 +7,9 @@ import com.dawhey.retailcart.repositories.CartUserRepository;
 import com.dawhey.retailcart.repositories.PurchaseActionRepository;
 import com.dawhey.retailcart.repositories.ShoppingCartRepository;
 import com.dawhey.retailcart.request.UserCartBindingRequest;
+import com.dawhey.retailcart.request.UserCartUnbindingRequest;
 import com.dawhey.retailcart.response.HasUserCartResponse;
+import com.dawhey.retailcart.response.StatusResponse;
 import com.dawhey.retailcart.response.UserCartBindingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +45,23 @@ public class CartController {
         }
         return new UserCartBindingResponse("failure");
     }
+
+    @PostMapping("/unbind")
+    @ResponseBody
+    public StatusResponse unbindUserFromCart(@RequestBody UserCartUnbindingRequest request) {
+        CartUser user = userRepository.findOneByToken(request.getToken());
+        if (user != null) {
+            ShoppingCart cart = cartRepository.findFirstByCurrentUser(user);
+            if (cart != null) {
+                cart.setCurrentUser(null);
+                cartRepository.save(cart);
+                return new StatusResponse("success");
+            }
+        }
+        return new StatusResponse("failure");
+
+    }
+
 
     @GetMapping("/has_cart")
     @ResponseBody
