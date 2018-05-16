@@ -35,23 +35,7 @@ public class ShoppingController {
     @Autowired
     private ProductRepository productRepository;
 
-    @PostMapping("/bind")
-    @ResponseBody
-    public UserCartBindingResponse bindUserToCart(@RequestBody UserCartBindingRequest request) {
-        if (request.getCartId() != null && request.getToken() != null) {
-            CartUser user = userRepository.findOneByToken(request.getToken());
-            ShoppingCart cart = cartRepository.findFirstById(Long.valueOf(request.getCartId()));
-            if (user != null && cart != null) {
-                cart.setCurrentUser(user);
-                cartRepository.save(cart);
-                PurchaseAction purchaseAction = new PurchaseAction();
-                purchaseAction.setCart(cart);
-                purchaseActionRepository.save(purchaseAction);
-                return new UserCartBindingResponse("success");
-            }
-        }
-        return new UserCartBindingResponse("failure");
-    }
+
 
     @PostMapping("/scan")
     @ResponseBody
