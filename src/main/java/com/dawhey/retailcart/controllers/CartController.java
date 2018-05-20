@@ -37,7 +37,8 @@ public class CartController {
             if (user != null && cart != null) {
                 cart.setCurrentUser(user);
                 cartRepository.save(cart);
-                PurchaseAction purchaseAction = new PurchaseAction();
+                PurchaseAction purchaseAction = purchaseActionRepository.findFirstByCart(cart);
+                if (purchaseAction == null) purchaseAction = new PurchaseAction();
                 purchaseAction.setCart(cart);
                 purchaseActionRepository.save(purchaseAction);
                 return new UserCartBindingResponse("success");

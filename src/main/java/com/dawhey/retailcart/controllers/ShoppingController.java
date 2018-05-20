@@ -10,15 +10,16 @@ import com.dawhey.retailcart.repositories.PurchaseActionRepository;
 import com.dawhey.retailcart.repositories.ShoppingCartRepository;
 import com.dawhey.retailcart.request.ProductScanRequest;
 import com.dawhey.retailcart.request.UserCartBindingRequest;
+import com.dawhey.retailcart.response.GetProductsResponse;
+import com.dawhey.retailcart.response.HasUserCartResponse;
 import com.dawhey.retailcart.response.ProductScanResponse;
 import com.dawhey.retailcart.response.UserCartBindingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class ShoppingController {
@@ -36,6 +37,19 @@ public class ShoppingController {
     private ProductRepository productRepository;
 
 
+    @GetMapping("/products")
+    @ResponseBody
+    public GetProductsResponse getProducts(@RequestParam("token") String token) {
+        CartUser user = userRepository.findOneByToken(token);
+        if (user != null) {
+            ShoppingCart cart = cartRepository.findFirstByCurrentUser(user);
+            if (cart != null) {
+                PurchaseAction action = purchaseActionRepository.findFirstByCart(cart);
+                return new GetProductsResponse("success", action.getProducts());
+            }
+        }
+        return new GetProductsResponse("failure", null);
+    }
 
     @PostMapping("/scan")
     @ResponseBody

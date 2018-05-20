@@ -9,6 +9,7 @@ public class Product {
     @GeneratedValue
     private long id;
 
+    private float price;
 
     private String name;
 
@@ -58,5 +59,13 @@ public class Product {
 
     public void setPurchaseAction(PurchaseAction purchaseAction) {
         this.purchaseAction = purchaseAction;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 }
