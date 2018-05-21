@@ -4,18 +4,19 @@ package com.dawhey.retailcart.response;
 
 public class ProductScanResponse extends StatusResponse {
 
-    private Long purchaseActionId;
 
-    public ProductScanResponse(String status, long purchaseActionId) {
+    private String productAction;
+
+    public ProductScanResponse(String status, String productAction) {
         super(status);
-        this.purchaseActionId = purchaseActionId;
+        this.productAction = productAction;
     }
 
-    public Long getPurchaseActionId() {
-        return purchaseActionId;
+    public String getProductAction() {
+        return productAction;
     }
 
-    public void setPurchaseActionId(Long purchaseActionId) {
-        this.purchaseActionId = purchaseActionId;
+    public void setProductAction(String productAction) {
+        this.productAction = productAction;
     }
 }

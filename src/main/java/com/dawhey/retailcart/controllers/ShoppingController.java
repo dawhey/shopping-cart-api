@@ -9,17 +9,16 @@ import com.dawhey.retailcart.repositories.ProductRepository;
 import com.dawhey.retailcart.repositories.PurchaseActionRepository;
 import com.dawhey.retailcart.repositories.ShoppingCartRepository;
 import com.dawhey.retailcart.request.ProductScanRequest;
-import com.dawhey.retailcart.request.UserCartBindingRequest;
 import com.dawhey.retailcart.response.GetProductsResponse;
-import com.dawhey.retailcart.response.HasUserCartResponse;
 import com.dawhey.retailcart.response.ProductScanResponse;
-import com.dawhey.retailcart.response.UserCartBindingResponse;
+import com.pusher.rest.Pusher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 public class ShoppingController {
@@ -35,6 +34,9 @@ public class ShoppingController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    Environment env;
 
 
     @GetMapping("/products")
@@ -60,11 +62,34 @@ public class ShoppingController {
             PurchaseAction purchaseAction = purchaseActionRepository.findFirstByCart(cart.get());
             if (purchaseAction != null) {
                 Product p = product.get();
+                if (p.getPurchaseAction() != null) {
+                    p.setPurchaseAction(null);
+                    productRepository.save(p);
+                    pushRemovedMessage(p);
+                    return new ProductScanResponse("success", "removed");
+                }
                 p.setPurchaseAction(purchaseAction);
                 productRepository.save(p);
-                return new ProductScanResponse("success", p.getPurchaseAction().getId());
+                pushAddedMessage(p);
+                return new ProductScanResponse("success", "added");
             }
         }
-        return new ProductScanResponse("failure", -1);
+        return new ProductScanResponse("failure", "");
+    }
+
+    private void pushRemovedMessage(Product p) {
+        Pusher pusher = new Pusher(env.getProperty("pusher.app_id"),env.getProperty("pusher.key"), env.getProperty("pusher.secret"));
+        pusher.setCluster(env.getProperty("pusher.cluster"));
+        pusher.setEncrypted(true);
+        p.setPurchaseAction(null);
+        pusher.trigger("shopping-cart-channel", "removed-event", p);
+    }
+
+    private void pushAddedMessage(Product p) {
+        Pusher pusher = new Pusher(env.getProperty("pusher.app_id"),env.getProperty("pusher.key"), env.getProperty("pusher.secret"));
+        pusher.setCluster(env.getProperty("pusher.cluster"));
+        pusher.setEncrypted(true);
+        p.setPurchaseAction(null);
+        pusher.trigger("shopping-cart-channel", "added-event", p);
     }
 }

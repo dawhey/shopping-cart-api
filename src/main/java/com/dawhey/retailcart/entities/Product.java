@@ -1,5 +1,7 @@
 package com.dawhey.retailcart.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,6 +19,7 @@ public class Product {
 
     private float weightVariance;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="purchase_action_id")
     private PurchaseAction purchaseAction;
